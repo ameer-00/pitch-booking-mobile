@@ -1,6 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'dart:convert';
 
+import 'package:http/http.dart' as http;
+
+import '../config.dart';
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
 
@@ -14,6 +18,39 @@ class _LoginScreenState extends State<LoginScreen> {
   String? _verificationId;
   bool _loading = false;
   String? _error;
+    static const _devSecret = String.fromEnvironment('DEV_LOGIN_SECRET');
+
+  Future<void> _devLogin() async {
+    var phone = _phoneController.text.trim();
+    if (phone.startsWith('0')) phone = phone.substring(1);
+
+    setState(() {
+      _loading = true;
+      _error = null;
+    });
+
+    try {
+      final response = await http.post(
+        Uri.parse('$apiBaseUrl/dev/token'),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({'phone': '+962$phone', 'secret': _devSecret}),
+      );
+      if (response.statusCode != 200) {
+        setState(() {
+          _loading = false;
+          _error = utf8.decode(response.bodyBytes);
+        });
+        return;
+      }
+      final token = jsonDecode(response.body)['custom_token'] as String;
+      await FirebaseAuth.instance.signInWithCustomToken(token);
+    } catch (e) {
+      setState(() {
+        _loading = false;
+        _error = '$e';
+      });
+    }
+  }
 
   @override
   void dispose() {
@@ -97,6 +134,13 @@ class _LoginScreenState extends State<LoginScreen> {
                 onPressed: _loading ? null : _sendCode,
                 child: const Text('أرسل الكود'),
               ),
+                            if (_devSecret.isNotEmpty) ...[
+                const SizedBox(height: 8),
+                OutlinedButton(
+                  onPressed: _loading ? null : _devLogin,
+                  child: const Text('دخول تجريبي (للتطوير)'),
+                ),
+              ],
             ] else ...[
               TextField(
                 controller: _codeController,
