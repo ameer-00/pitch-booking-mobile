@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "140915275006",
+    "project_id": "pitch-booking-7371e",
+    "storage_bucket": "pitch-booking-7371e.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:140915275006:android:b91aca774ea255cfc561af",
+        "android_client_info": {
+          "package_name": "com.ameermalkawi.pitch_booking_mobile"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC3SEAdKOpoLIqiBSRRV1wj7e8jXjdF7_s"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
